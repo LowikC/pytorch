@@ -34,10 +34,17 @@ void THNN_(BatchNormalization_updateOutput)(
       mean = (scalar_t) sum / n;
       THTensor_(set1d)(save_mean, f, (scalar_t) mean);
 
-      // compute variance per input
+      // compute variance per input with "corrected two-pass algorithm" (Chan et al., 1983).
       sum = 0;
+      accreal sum_correction = 0;
+
       TH_TENSOR_APPLY(scalar_t, in,
-        sum += (*in_data - mean) * (*in_data - mean););
+        scalar_t delta = (*in_data - mean);
+        sum += delta * delta;
+        sum_correction += delta;
+      );
+
+      sum -= (sum_correction * sum_correction) / n;
 
       if (sum == 0 && eps == 0.0) {
         invstd = 0;
