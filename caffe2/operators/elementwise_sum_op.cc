@@ -21,7 +21,7 @@ OPERATOR_SCHEMA(Sum)
     .AllowInplace({{0, 0}})
     .CostInferenceFunction(CostInferenceForSum)
     .InputsCanCrossDevices()
-    .IdenticalTypeAndShapeOfInput(0)
+    //.IdenticalTypeAndShapeOfInput(0)
     .SetDoc(R"DOC(
 Element-wise sum of each of the input tensors. The first input tensor can be used
 in-place as the output tensor, in which case the sum will be done in place and
@@ -114,6 +114,8 @@ A after Sum: [[10.  7. 11.]
 </details>
 
 )DOC")
+    .Arg("broadcast", "*(type: int; default: 0)* Pass 1 to enable broadcasting")
+    .Arg("axis", "*(type: int; default: -1)* Axis to concatenate on.")
     .Input(
         0,
         "A",
